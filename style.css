@@ -1,0 +1,138 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #000;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;              /* 防止手机端拖动/缩放页面 */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+/* ---------- 全屏摄像头 ---------- */
+#cam {
+  position: fixed; inset: 0;
+  width: 100vw; height: 100vh;
+  object-fit: cover;               /* 铺满全屏（会裁剪） */
+  transform: scaleX(-1);           /* 镜像 */
+}
+
+#overlay {
+  position: fixed; inset: 0;
+  width: 100vw; height: 100vh;
+  /* 不镜像：文字层本身不翻转，坐标在 JS 里反转（保证字母方向正常） */
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ---------- 重试按钮（仅出错时显示） ---------- */
+#retryBtn {
+  position: fixed;
+  left: 50%; top: calc(50% + 60px);
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 10px 28px;
+  border-radius: 999px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255,255,255,0.55);
+  cursor: pointer;
+}
+#retryBtn:hover { background: rgba(255,255,255,0.28); }
+
+/* ---------- 加载动画（无文字） ---------- */
+#loadingDot {
+  position: fixed;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  display: flex; gap: 10px;
+}
+.dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  animation: bounce 1.2s infinite ease-in-out;
+}
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%      { transform: translateY(-14px); opacity: 1; }
+}
+
+/* ---------- 错误提示（仅出错时显示） ---------- */
+#errBox {
+  position: fixed;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: 90vw;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(200, 40, 60, 0.85);
+  color: #fff;
+  font-size: 0.85rem;
+  text-align: center;
+}
+.hidden { display: none !important; }
+
+/* ---------- 触摸启动层（移动端需手势才能调摄像头；仅失败时显示） ---------- */
+#tapLayer {
+  position: fixed; inset: 0;
+  z-index: 7;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.tap-dot {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.12);
+  animation: tapPulse 1.6s infinite ease-in-out;
+}
+@keyframes tapPulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50%      { transform: scale(1.1); opacity: 1; }
+}
+
+/* ---------- 指尖文字 ---------- */
+.finger-label {
+  position: absolute;
+  transform: translate(-50%, -60%);   /* 文字中心对准指尖（略偏上） */
+  font-weight: 900;
+  font-size: 1.35rem;
+  padding: 1px 11px;
+  border-radius: 999px;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  border: 2px solid rgba(255,255,255,0.9);
+  white-space: nowrap;
+  transition: opacity 0.1s;
+  user-select: none;
+  pointer-events: none;
+}
+.label-i    { background: #ff6fae; }
+.label-love { background: #ffb84d; font-size: 1.2rem; }
+.label-s2u  { background: #5aa7ff; }
+.label-dot  { background: #fff; color: #333; font-size: 1.7rem; line-height: 1; padding: 1px 7px; }
+.label-very { background: #7ed957; font-size: 1.2rem; }
+.label-much { background: #c77dff; font-size: 1.2rem; }
+
+.finger-label.flash { animation: flashPop 0.55s ease; }
+@keyframes flashPop {
+  0%   { transform: translate(-50%, -60%) scale(1); }
+  30%  { transform: translate(-50%, -85%) scale(1.5); }
+  100% { transform: translate(-50%, -60%) scale(1); }
+}

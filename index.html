@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>s2u</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<video id="cam" autoplay playsinline muted></video>
+<div id="overlay"></div>
+
+<div id="loadingDot" class="hidden"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+<button id="retryBtn" class="hidden">重试</button>
+<div id="errBox" class="hidden"></div>
+<div id="tapLayer" class="hidden"><span class="tap-dot"></span></div>
+
+<script type="module" src="./app.js"></script>
+<script>
+window.addEventListener('error', function (e) {
+  var b = document.getElementById('errBox');
+  if (b) { b.textContent = (e.message || '未知错误'); b.classList.remove('hidden'); }
+});
+window.addEventListener('unhandledrejection', function (e) {
+  var b = document.getElementById('errBox');
+  if (b) { b.textContent = (e.reason && e.reason.message ? e.reason.message : e.reason); b.classList.remove('hidden'); }
+});
+</script>
+</body>
+</html>
